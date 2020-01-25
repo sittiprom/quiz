@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <logger name="org.springframework.web" level="INFO"/>
+    <timestamp key="myTimestamp" datePattern="yyyy-MM-dd"/>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS}  - %X{correlationId} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/quiz/quiz.${myTimestamp}.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd_HH:mm:ss.SSS} - %X{correlationId} - %msg%n</Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <FileNamePattern>quiz.%i{yyyy-MM-dd_HH:mm:ss.SSS}}.log</FileNamePattern>
+        </rollingPolicy>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/var/log/quiz/quiz-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep log files for 30 days -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!-- remove comment the appender-ref ref="STDOUT" to display log in console-->
+    <root level="INFO">
+        <!--appender-ref ref="STDOUT" /-->
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>
