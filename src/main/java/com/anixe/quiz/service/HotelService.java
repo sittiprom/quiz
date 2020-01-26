@@ -23,7 +23,7 @@ public class HotelService {
     private BookingRepository bookingRepository;
 
 
-    public Hotel createAndUpdate(Hotel hotel) {
+    public Hotel save(Hotel hotel) {
 
         return hotelRepository.save(hotel);
     }

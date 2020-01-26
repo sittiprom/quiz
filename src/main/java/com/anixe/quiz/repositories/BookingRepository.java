@@ -18,10 +18,4 @@ public interface BookingRepository extends JpaRepository<Booking,Integer> {
 
     public List<Booking> findByHotelId(Integer hotelId);
 
-    public List<Booking> findByCustomerSurname(String surname);
-
-
-
-
-
 }

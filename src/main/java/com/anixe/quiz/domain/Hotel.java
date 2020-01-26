@@ -1,10 +1,8 @@
 package com.anixe.quiz.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,11 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 @Entity
 public class Hotel {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_hotel")
     private  Integer id ;
     private  String name ;
@@ -27,6 +26,7 @@ public class Hotel {
     private BigDecimal starRating ;
 
     @OneToMany(mappedBy="hotel")
+    @JsonIgnore
     private List<Booking> bookings;
 
 

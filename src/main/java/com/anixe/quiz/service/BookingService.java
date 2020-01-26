@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -20,10 +21,19 @@ public class BookingService {
     public List<Booking> findByHotelId(Integer hotelId) {
 
         return bookingRepository.findByHotelId(hotelId);
+    }
 
-        }
+    public Booking createOrUpdate(Booking booking){
+       return bookingRepository.save(booking);
+    }
 
+    public Optional<Booking> findByBookingId(Integer id){
+        return bookingRepository.findById(id);
+    }
 
+    public void delete(Booking booking){
+        bookingRepository.delete(booking);
+    }
 
 
 }
