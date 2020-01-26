@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 
@@ -29,7 +30,9 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY ,optional = false)
     @JoinColumn(name="id_hotel" , nullable = false)
     @JsonIgnore
+    @NotNull
     private Hotel hotel;
+
 
 
 }

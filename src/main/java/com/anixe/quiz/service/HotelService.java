@@ -1,7 +1,9 @@
 package com.anixe.quiz.service;
 
+import com.anixe.quiz.domain.Booking;
 import com.anixe.quiz.domain.Hotel;
 import com.anixe.quiz.domain.HotelResponse;
+import com.anixe.quiz.repositories.BookingRepository;
 import com.anixe.quiz.repositories.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,12 +11,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class HotelService {
 
     @Autowired
     private HotelRepository hotelRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
 
     public Hotel createAndUpdate(Hotel hotel) {
@@ -35,10 +41,11 @@ public class HotelService {
         hotelRepository.delete(hotel);
     }
 
-    /*public Set<HotelResponse> findByCustomerSurname(String surname) {
+    public Set<HotelResponse> findByCustomerSurname(String surname){
+        return  hotelRepository.findByCustomerSurname(surname);
 
-        return hotelRepository.findByCustomerSurname(surname);
+    }
 
-    }*/
+
 
 }

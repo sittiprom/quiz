@@ -26,8 +26,8 @@ public class Hotel {
     private  String address;
     private BigDecimal starRating ;
 
+    @OneToMany(mappedBy="hotel")
+    private List<Booking> bookings;
 
-    /*@OneToMany(mappedBy="hotel")
-    private List<Booking> bookings;*/
 
 }

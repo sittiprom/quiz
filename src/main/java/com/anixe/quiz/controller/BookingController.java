@@ -15,21 +15,18 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@RequestMapping("booking")
 public class BookingController {
 
     @Autowired
     private BookingService bookingService;
 
-    @Autowired
-    private HotelService hotelService;
+    private Booking booking = new Booking();
 
-   /* @RequestMapping(value = "/getHotelBySurname/{surname}", method = RequestMethod.GET)
-    public Set<HotelResponse> getHotelByCustomerSurname(@PathVariable String surname) {
-        return hotelService.findByCustomerSurname(surname);
-    }*/
 
-    @RequestMapping(value = "/getbookingByHotelId/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/findByHotelId/{id}", method = RequestMethod.GET)
     public List<Booking> getBookingByHotelId(@PathVariable Integer id) {
         return bookingService.findByHotelId(id);
+
     }
 }
