@@ -35,10 +35,10 @@ public class HotelService {
         hotelRepository.delete(hotel);
     }
 
-    public Set<HotelResponse> findByCustomerSurname(String surname) {
+    /*public Set<HotelResponse> findByCustomerSurname(String surname) {
 
         return hotelRepository.findByCustomerSurname(surname);
 
-    }
+    }*/
 
 }

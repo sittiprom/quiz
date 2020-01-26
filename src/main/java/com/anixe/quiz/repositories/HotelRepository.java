@@ -15,9 +15,9 @@ import java.util.Set;
 @Transactional
 public interface HotelRepository extends JpaRepository<Hotel,Integer> {
 
-    @Query("select NEW com.anixe.quiz.domain.HotelResponse(h.id,h.name,h.address,h.starRating" +
+    /*@Query("select NEW com.anixe.quiz.domain.HotelResponse(h.id,h.name,h.address,h.starRating" +
             ") FROM Hotel h JOIN h.bookings b where b.customerSurname = :surname")
-    public Set<HotelResponse> findByCustomerSurname(@Param("surname") String surname);
+    public Set<HotelResponse> findByCustomerSurname(@Param("surname") String surname);*/
 
 }
 

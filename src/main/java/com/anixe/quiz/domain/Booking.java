@@ -1,5 +1,6 @@
 package com.anixe.quiz.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,15 +19,16 @@ public class Booking {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
     private String customerName;
     private String customerSurname;
     private Integer numberOfPax;
     private String currency;
     private BigDecimal priceAmount;
 
-    @ManyToOne
-    @JoinColumn(name="id_hotel")
+    @ManyToOne(fetch = FetchType.LAZY ,optional = false)
+    @JoinColumn(name="id_hotel" , nullable = false)
+    @JsonIgnore
     private Hotel hotel;
 
 

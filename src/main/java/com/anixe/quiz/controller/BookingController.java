@@ -23,10 +23,10 @@ public class BookingController {
     @Autowired
     private HotelService hotelService;
 
-    @RequestMapping(value = "/getHotelBySurname/{surname}", method = RequestMethod.GET)
+   /* @RequestMapping(value = "/getHotelBySurname/{surname}", method = RequestMethod.GET)
     public Set<HotelResponse> getHotelByCustomerSurname(@PathVariable String surname) {
         return hotelService.findByCustomerSurname(surname);
-    }
+    }*/
 
     @RequestMapping(value = "/getbookingByHotelId/{id}", method = RequestMethod.GET)
     public List<Booking> getBookingByHotelId(@PathVariable Integer id) {
