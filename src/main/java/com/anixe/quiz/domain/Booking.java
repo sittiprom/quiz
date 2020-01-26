@@ -1,10 +1,7 @@
 package com.anixe.quiz.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,6 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 @Entity
 public class Booking {
 
@@ -24,7 +22,10 @@ public class Booking {
     private String customerName;
     private String customerSurname;
     private Integer numberOfPax;
+
+    @JsonIgnore
     private String currency;
+    @JsonIgnore
     private BigDecimal priceAmount;
 
     @ManyToOne(fetch = FetchType.LAZY ,optional = false)

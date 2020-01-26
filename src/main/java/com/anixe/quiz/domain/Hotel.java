@@ -2,6 +2,7 @@ package com.anixe.quiz.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -25,7 +26,7 @@ public class Hotel {
     private BigDecimal starRating ;
 
     @OneToMany(mappedBy="hotel")
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Booking> bookings;
 
 

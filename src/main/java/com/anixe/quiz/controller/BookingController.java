@@ -1,14 +1,18 @@
 package com.anixe.quiz.controller;
 
 import com.anixe.quiz.domain.Booking;
+import com.anixe.quiz.domain.Hotel;
+import com.anixe.quiz.request.BookingRequest;
 import com.anixe.quiz.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("booking")
@@ -17,12 +21,44 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-    private Booking booking = new Booking();
+    @GetMapping("/findByHotelId/{id}")
+    public ResponseEntity<List<Booking>> getBookingByHotelId(@PathVariable Integer id) {
 
+        return ResponseEntity.ok(bookingService.findByHotelId(id));
 
-    @RequestMapping(value = "/findByHotelId/{id}", method = RequestMethod.GET)
-    public List<Booking> getBookingByHotelId(@PathVariable Integer id) {
-        return bookingService.findByHotelId(id);
+    }
+
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<Booking> getBookingById(@PathVariable Integer id) {
+
+        Optional<Booking> booking = bookingService.findByBookingId(id);
+        if (!booking.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(booking.get());
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> create(@Valid @RequestBody BookingRequest bookingRequest,
+                                          BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return  new ResponseEntity<>(bindingResult.getAllErrors(),HttpStatus.BAD_REQUEST);
+
+        }
+
+        return ResponseEntity.ok(bookingService.save(createBookingObject(bookingRequest)));
+
+    }
+
+    private Booking createBookingObject(BookingRequest bookingRequest){
+
+        Booking booking = Booking.builder()
+                          .customerName(bookingRequest.getCustomerName())
+                          .customerSurname(bookingRequest.getCustomerSurname())
+                          .numberOfPax(bookingRequest.getNumberOfPax())
+                          .hotel(bookingRequest.getHotel()).build();
+        return  booking;
+
 
     }
 }

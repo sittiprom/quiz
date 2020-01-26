@@ -20,7 +20,7 @@ public class BookingService {
         return bookingRepository.findByHotelId(hotelId);
     }
 
-    public Booking createOrUpdate(Booking booking){
+    public Booking save(Booking booking){
        return bookingRepository.save(booking);
     }
 
