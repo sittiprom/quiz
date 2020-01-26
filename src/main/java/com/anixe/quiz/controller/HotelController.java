@@ -1,7 +1,7 @@
 package com.anixe.quiz.controller;
 
 import com.anixe.quiz.domain.Hotel;
-import com.anixe.quiz.domain.HotelResponse;
+import com.anixe.quiz.response.HotelResponse;
 import com.anixe.quiz.request.HotelRequest;
 import com.anixe.quiz.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +49,30 @@ public class HotelController {
 
     @PostMapping("/create")
     public ResponseEntity create(@Valid @RequestBody HotelRequest hotelRequest) {
-        Hotel hotel = Hotel.builder()
-                        .id(hotelRequest.getId())
-                        .name(hotelRequest.getName())
-                        .starRating(hotelRequest.getStarRating()).build();
-        return ResponseEntity.ok(hotelService.save(hotel));
+
+        return ResponseEntity.ok(hotelService.save(buildHotelObject(hotelRequest)));
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Hotel> update(@PathVariable Integer id, @Valid @RequestBody HotelRequest hotelRequest) {
+        if (!hotelService.findById(id).isPresent()) {
+           // log.error("Id " + id + " is not existed");
+            ResponseEntity.badRequest().build();
+        }
+        Hotel hotel = buildHotelObject(hotelRequest);
+        hotel.setId(id);
+       return ResponseEntity.ok(hotelService.save(hotel));
+    }
+
+    private  Hotel buildHotelObject(HotelRequest hotelRequest){
+        Hotel  hotel = Hotel.builder()
+                .id(hotelRequest.getId())
+                .name(hotelRequest.getName())
+                .address(hotelRequest.getAddress())
+                .starRating(hotelRequest.getStarRating()).build();;
+        return hotel;
+    }
+
 
 }
 

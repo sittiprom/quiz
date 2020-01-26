@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 public class Booking {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String customerName;
     private String customerSurname;

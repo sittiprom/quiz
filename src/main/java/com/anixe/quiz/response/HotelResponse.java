@@ -1,4 +1,4 @@
-package com.anixe.quiz.domain;
+package com.anixe.quiz.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
