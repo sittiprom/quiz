@@ -10,7 +10,7 @@ import java.util.List;
 @Transactional
 public interface BookingRepository extends JpaRepository<Booking,Integer> {
 
-    List<Booking> findByHotelId(Integer hotelId);
+    List<Booking> findByHotelId(Integer id);
 
 
 }
