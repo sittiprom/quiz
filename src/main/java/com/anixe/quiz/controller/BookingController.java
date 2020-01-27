@@ -50,6 +50,19 @@ public class BookingController {
 
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity delete(@PathVariable Integer id) {
+        Optional<Booking> deletedHotel = bookingService.findByBookingId(id);
+        if (!deletedHotel.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        bookingService.delete(deletedHotel.get());
+
+        return ResponseEntity.ok().build();
+    }
+
+
     private Booking createBookingObject(BookingRequest bookingRequest){
 
         Booking booking = Booking.builder()

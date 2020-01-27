@@ -28,12 +28,28 @@ public class Booking {
     @JsonIgnore
     private BigDecimal priceAmount;
 
-    @ManyToOne(fetch = FetchType.LAZY ,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="id_hotel" , nullable = false)
     @JsonIgnore
     @NotNull
     private Hotel hotel;
 
 
+    /*public String getHotelName(){
+        return hotel.getName();
+    }
+
+    public Integer getHotelId(){
+        return hotel.getId();
+    }
+
+    public String getHotelAddress(){
+        return hotel.getAddress();
+    }
+
+    public BigDecimal getHotelStartingRating(){
+        return hotel.getStarRating();
+    }
+*/
 
 }

@@ -14,4 +14,5 @@ public class BookingResponse {
     private String customerName;
     private String customerSurname;
     private Integer numberOfPax;
+    private Hotel hotel;
 }

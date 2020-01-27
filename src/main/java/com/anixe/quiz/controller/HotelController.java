@@ -64,6 +64,18 @@ public class HotelController {
        return ResponseEntity.ok(hotelService.save(hotel));
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity delete(@PathVariable Integer id) {
+        Optional<Hotel> deletedHotel = hotelService.findById(id);
+        if (!deletedHotel.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        hotelService.deleteHotel(deletedHotel.get());
+
+        return ResponseEntity.ok().build();
+    }
+
     private  Hotel buildHotelObject(HotelRequest hotelRequest){
         Hotel  hotel = Hotel.builder()
                 .id(hotelRequest.getId())
