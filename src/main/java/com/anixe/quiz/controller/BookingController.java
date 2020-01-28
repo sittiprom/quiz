@@ -1,7 +1,6 @@
 package com.anixe.quiz.controller;
 
 import com.anixe.quiz.domain.Booking;
-import com.anixe.quiz.domain.Hotel;
 import com.anixe.quiz.request.BookingRequest;
 import com.anixe.quiz.service.BookingService;
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ public class BookingController {
     @GetMapping("/findByHotelId/{id}")
     public ResponseEntity<List<Booking>> getBookingByHotelId(@PathVariable Integer id) {
 
-        log.info(" Find Booking By HotelId " + id);
+        log.info(" Find Booking By HotelId :  " + id);
 
         return ResponseEntity.ok(bookingService.findByHotelId(id));
 
@@ -37,7 +36,7 @@ public class BookingController {
     @GetMapping("/findById/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable Integer id) {
 
-        log.info(" Find Booking By BookingId " + id);
+        log.info(" Find Booking By BookingId :  " + id);
 
         Optional<Booking> booking = bookingService.findByBookingId(id);
         if (!booking.isPresent()) {

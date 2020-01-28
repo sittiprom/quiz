@@ -4,6 +4,9 @@ package com.anixe.quiz.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,6 +30,7 @@ public class Hotel {
 
     @OneToMany(mappedBy="hotel")
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Booking> bookings;
 
 

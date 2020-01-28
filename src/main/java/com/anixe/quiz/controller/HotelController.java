@@ -1,6 +1,7 @@
 package com.anixe.quiz.controller;
 
 import com.anixe.quiz.domain.Hotel;
+import com.anixe.quiz.response.BookingTotalAmount;
 import com.anixe.quiz.response.HotelResponse;
 import com.anixe.quiz.request.HotelRequest;
 import com.anixe.quiz.service.HotelService;
@@ -69,7 +70,7 @@ public class HotelController {
     @PutMapping("/update/{id}")
     public ResponseEntity<Hotel> update(@PathVariable Integer id, @Valid @RequestBody HotelRequest hotelRequest) {
 
-        log.info("hotel update request : " + hotelRequest.toString());
+        log.info("hotel update request : " + hotelRequest.toString() + "with hotel id : " + id);
 
         if (!hotelService.findById(id).isPresent()) {
             log.error("Id " + id + " is not existed");
@@ -92,6 +93,13 @@ public class HotelController {
         hotelService.deleteHotel(deletedHotel.get());
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/findTotalAmountBooking/{id}")
+    public ResponseEntity<BookingTotalAmount> findTotalAmountByHotelId(@PathVariable Integer id) {
+
+        log.info("Find TotalAmount Booking By hotelId : " + id);
+        return ResponseEntity.ok(hotelService.findSumPriceByHotel(id));
     }
 
     private Hotel buildHotelObject(HotelRequest hotelRequest) {

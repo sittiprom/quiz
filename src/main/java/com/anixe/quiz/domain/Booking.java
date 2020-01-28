@@ -1,6 +1,7 @@
 package com.anixe.quiz.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,24 +24,24 @@ public class Booking {
     private String customerSurname;
     private Integer numberOfPax;
 
-    @JsonIgnore
-    private String currency;
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Builder.Default
+    private String currency = "Euro";
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private BigDecimal priceAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id_hotel" , nullable = false)
+    @JoinColumn(name="id_hotel")
     @JsonIgnore
     @NotNull
     private Hotel hotel;
 
-
-    /*public String getHotelName(){
-        return hotel.getName();
+    public Integer getIdHotel(){
+        return  hotel.getId();
     }
 
-    public Integer getHotelId(){
-        return hotel.getId();
+    public String getHotelName(){
+        return hotel.getName();
     }
 
     public String getHotelAddress(){
@@ -50,5 +51,4 @@ public class Booking {
     public BigDecimal getHotelStartingRating(){
         return hotel.getStarRating();
     }
-*/
 }
