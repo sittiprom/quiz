@@ -49,13 +49,13 @@ public class HotelController {
     }
 
     @GetMapping("/findHotelBySurname/{surname}")
-    public ResponseEntity<Set<HotelResponse>> getHotelByCustomerSurname(@PathVariable String surname) {
+    public ResponseEntity<?> getHotelByCustomerSurname(@PathVariable String surname) {
 
         log.info("Find hotel By Customer surname   : " + surname);
 
         Set<HotelResponse> hotelResponses = hotelService.findByCustomerSurname(surname);
         if (hotelResponses == null || hotelResponses.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return  ResponseEntity.badRequest().body("Customer surname  " + surname + " is not existed");
         }
 
         return ResponseEntity.ok(hotelResponses);
@@ -80,12 +80,13 @@ public class HotelController {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
 
-        log.info("hotel update request : " + hotelRequest.toString() + "with hotel id : " + id);
-
         if (!hotelService.findById(id).isPresent()) {
             log.error("Id " + id + " is not existed");
-            ResponseEntity.badRequest().build();
+            return  ResponseEntity.badRequest().body("Hotel Id " + id + " is not existed");
         }
+
+        log.info("hotel update request : " + hotelRequest.toString() + "with hotel id : " + id);
+
         Hotel hotel = createHotelObject(hotelRequest);
         hotel.setId(id);
         return ResponseEntity.ok(hotelService.save(hotel));
@@ -106,9 +107,16 @@ public class HotelController {
     }
 
     @GetMapping("/findTotalAmountBooking/{id}")
-    public ResponseEntity<BookingTotalAmount> findTotalAmountByHotelId(@PathVariable Integer id) {
+    public ResponseEntity<?> findTotalAmountByHotelId(@PathVariable Integer id) {
+
+        if (!hotelService.findById(id).isPresent()) {
+            log.error("Hotel Id " + id + " is not existed");
+           return  ResponseEntity.badRequest().body("Hotel Id " + id + " is not existed");
+
+        }
 
         log.info("Find TotalAmount Booking By hotelId : " + id);
+
         return ResponseEntity.ok(hotelService.findSumPriceByHotel(id));
     }
 

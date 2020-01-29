@@ -25,12 +25,12 @@ public class BookingController {
     private BookingService bookingService;
 
     @GetMapping("/findByHotelId/{id}")
-    public ResponseEntity<List<Booking>> getBookingByHotelId(@PathVariable Integer id) {
+    public ResponseEntity<?> getBookingByHotelId(@PathVariable Integer id) {
 
         log.info(" Find Booking By HotelId :  " + id);
         List<Booking> bookings = bookingService.findByHotelId(id);
         if(bookings == null || bookings.isEmpty()){
-            return ResponseEntity.notFound().build();
+            return  ResponseEntity.badRequest().body("Hotel Id " + id + " is not existed");
         }
 
         return ResponseEntity.ok(bookingService.findByHotelId(id));
@@ -76,7 +76,7 @@ public class BookingController {
 
         if (!bookingService.findByBookingId(id).isPresent()) {
             log.error("Booking Id " + id + " is not existed");
-            ResponseEntity.badRequest().build();
+            return  ResponseEntity.badRequest().body("Booking Id " + id + " is not existed");
         }
 
         Booking booking = createBookingObject(bookingRequest);
@@ -90,7 +90,7 @@ public class BookingController {
 
         Optional<Booking> deletedHotel = bookingService.findByBookingId(id);
         if (!deletedHotel.isPresent()) {
-            return ResponseEntity.badRequest().build();
+            return  ResponseEntity.badRequest().body("Booking Id " + id + " is not existed");
         }
 
         bookingService.delete(deletedHotel.get());
