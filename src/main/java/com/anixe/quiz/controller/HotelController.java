@@ -9,7 +9,9 @@ import com.anixe.quiz.service.HotelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -60,15 +62,23 @@ public class HotelController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity create(@Valid @RequestBody HotelRequest hotelRequest) {
+    public ResponseEntity<?> create(@Valid @RequestBody HotelRequest hotelRequest , BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
 
         log.info("hotel create request : " + hotelRequest.toString());
-
-        return ResponseEntity.ok(hotelService.save(buildHotelObject(hotelRequest)));
+        return ResponseEntity.ok(hotelService.save(createHotelObject(hotelRequest)));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Hotel> update(@PathVariable Integer id, @Valid @RequestBody HotelRequest hotelRequest) {
+    public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody HotelRequest hotelRequest ,
+                                        BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
 
         log.info("hotel update request : " + hotelRequest.toString() + "with hotel id : " + id);
 
@@ -76,7 +86,7 @@ public class HotelController {
             log.error("Id " + id + " is not existed");
             ResponseEntity.badRequest().build();
         }
-        Hotel hotel = buildHotelObject(hotelRequest);
+        Hotel hotel = createHotelObject(hotelRequest);
         hotel.setId(id);
         return ResponseEntity.ok(hotelService.save(hotel));
     }
@@ -102,7 +112,7 @@ public class HotelController {
         return ResponseEntity.ok(hotelService.findSumPriceByHotel(id));
     }
 
-    private Hotel buildHotelObject(HotelRequest hotelRequest) {
+    private Hotel createHotelObject(HotelRequest hotelRequest) {
         return Hotel.builder()
                 .id(hotelRequest.getId())
                 .name(hotelRequest.getName())

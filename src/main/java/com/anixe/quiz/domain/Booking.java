@@ -36,19 +36,4 @@ public class Booking {
     @NotNull
     private Hotel hotel;
 
-    public Integer getIdHotel(){
-        return  hotel.getId();
-    }
-
-    public String getHotelName(){
-        return hotel.getName();
-    }
-
-    public String getHotelAddress(){
-        return hotel.getAddress();
-    }
-
-    public BigDecimal getHotelStartingRating(){
-        return hotel.getStarRating();
-    }
 }

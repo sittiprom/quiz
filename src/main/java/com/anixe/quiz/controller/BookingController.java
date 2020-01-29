@@ -47,11 +47,11 @@ public class BookingController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody BookingRequest bookingRequest,
-                                          BindingResult bindingResult) {
+                                    BindingResult bindingResult) {
         log.info(" Booking Create Request " + bookingRequest);
 
         if (bindingResult.hasErrors()) {
-            return  new ResponseEntity<>(bindingResult.getAllErrors(),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
 
         }
 
@@ -59,9 +59,30 @@ public class BookingController {
 
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody BookingRequest bookingRequest,
+                                    BindingResult bindingResult) {
+
+        log.info("booking update request : " + bookingRequest.toString() + "with booking id : " + id);
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+
+        }
+
+        if (!bookingService.findByBookingId(id).isPresent()) {
+            log.error("Booking Id " + id + " is not existed");
+            ResponseEntity.badRequest().build();
+        }
+
+        Booking booking = createBookingObject(bookingRequest);
+        booking.setId(id);
+        return ResponseEntity.ok(bookingService.save(booking));
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity delete(@PathVariable Integer id) {
-        log.info(" Delete Booking Id " + id );
+        log.info(" Delete Booking Id " + id);
 
         Optional<Booking> deletedHotel = bookingService.findByBookingId(id);
         if (!deletedHotel.isPresent()) {
@@ -74,13 +95,13 @@ public class BookingController {
     }
 
 
-    private Booking createBookingObject(BookingRequest bookingRequest){
+    private Booking createBookingObject(BookingRequest bookingRequest) {
 
-        return  Booking.builder()
-                          .customerName(bookingRequest.getCustomerName())
-                          .customerSurname(bookingRequest.getCustomerSurname())
-                          .numberOfPax(bookingRequest.getNumberOfPax())
-                          .hotel(bookingRequest.getHotel()).build();
+        return Booking.builder()
+                .customerName(bookingRequest.getCustomerName())
+                .customerSurname(bookingRequest.getCustomerSurname())
+                .numberOfPax(bookingRequest.getNumberOfPax())
+                .hotel(bookingRequest.getHotel()).build();
 
     }
 }
