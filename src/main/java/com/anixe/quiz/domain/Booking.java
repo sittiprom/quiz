@@ -25,10 +25,9 @@ public class Booking {
     private Integer numberOfPax;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Builder.Default
-    private String currency = "Euro";
+    private String currency ;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private BigDecimal priceAmount;
+    private BigDecimal priceAmount ;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="id_hotel")

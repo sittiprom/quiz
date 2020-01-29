@@ -28,6 +28,10 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getBookingByHotelId(@PathVariable Integer id) {
 
         log.info(" Find Booking By HotelId :  " + id);
+        List<Booking> bookings = bookingService.findByHotelId(id);
+        if(bookings == null || bookings.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.ok(bookingService.findByHotelId(id));
 

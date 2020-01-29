@@ -3,6 +3,7 @@ package com.anixe.quiz.response;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 
 @Data
@@ -13,7 +14,5 @@ import java.math.BigDecimal;
 public class BookingTotalAmount {
     private Integer hotelId ;
     private String hotelName ;
-    private BigDecimal sumPrice ;
-    @Builder.Default
-    private String currency = "Euro";
+    Map<String,BigDecimal> sumPrice ;
 }

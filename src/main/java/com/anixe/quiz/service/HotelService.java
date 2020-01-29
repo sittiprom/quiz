@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 @Service
 public class HotelService {
@@ -50,20 +50,40 @@ public class HotelService {
     public BookingTotalAmount findSumPriceByHotel(Integer hotelId) {
         Optional<Hotel> hotelOptional = hotelRepository.findById(hotelId);
         BookingTotalAmount bookingTotalAmount = new BookingTotalAmount();
+        Map<String, BigDecimal> sumPrice = new HashMap<>();
         hotelOptional.ifPresent(hotel -> {
-
+            List<Booking> bookingPrice = new ArrayList<>();
             if (hotel.getBookings() != null && !hotel.getBookings().isEmpty()) {
-                bookingTotalAmount.setHotelId(hotel.getId());
-                bookingTotalAmount.setHotelName(hotel.getName());
-                bookingTotalAmount.setSumPrice(hotel.getBookings().stream()
-                        .map(Booking::getPriceAmount).reduce(BigDecimal.ZERO, BigDecimal::add));
+                bookingPrice = hotel.getBookings().stream().filter(booking -> (booking.getCurrency() != null
+                        && !booking.getCurrency().isEmpty()) && booking.getPriceAmount() != null).collect(Collectors.toList());
 
             }
+            Set<String> currencySet = new HashSet<>(bookingPrice.stream().map(booking -> booking.getCurrency())
+                    .collect(Collectors.toSet()));
+
+
+            for (String currency : currencySet) {
+                for (Booking booking : bookingPrice) {
+
+                    if (booking.getCurrency().equals(currency)) {
+                        if (sumPrice.containsKey(currency)) {
+                            sumPrice.put(currency, sumPrice.get(currency).add(booking.getPriceAmount()));
+
+                        } else {
+                            sumPrice.put(currency, booking.getPriceAmount());
+                        }
+
+                    }
+                }
+
+            }
+            bookingTotalAmount.setHotelName(hotel.getName());
+            bookingTotalAmount.setHotelId(hotelId);
+            bookingTotalAmount.setSumPrice(sumPrice);
+
 
         });
 
         return bookingTotalAmount;
-
     }
-
 }

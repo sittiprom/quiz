@@ -31,6 +31,7 @@ public class Hotel {
     @OneToMany(mappedBy="hotel")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private List<Booking> bookings;
 
 
