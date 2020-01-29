@@ -7,8 +7,10 @@
 
    INSERT INTO BOOKING (ID, CUSTOMER_NAME,CUSTOMER_SURNAME,NUMBER_OF_PAX,CURRENCY,PRICE_AMOUNT,ID_HOTEL) VALUES
   (1001, 'TOM', 'Ebron' ,5,'EU',200.00,1001),
-  (1002, 'Rosalie', 'Ebron' ,2,'USD',200.00,1001),
-  (1003, 'Karleen', 'Mcnamee' ,2,'THB',200.00,1002),
-  (1004, 'Jutta', 'Hatton' ,1,'THB',200.00,1003),
-  (1005, 'Marilyn', 'Hatton' ,4,'USD',200.00,1003),
-  (1006, ' Lauson', 'Hen' ,3,'EU',200.00,1004);
+  (1002, 'Rosalie', 'Ebron' ,2,'USD',100.00,1001),
+  (1003, 'Karleen', 'Mcnamee' ,2,'THB',500.00,1002),
+  (1004, 'Jutta', 'Hatton' ,1,'THB',250.00,1003),
+  (1005, 'Marilyn', 'Hatton' ,4,'USD',400.00,1003),
+  (1006, ' Lauson', 'Hen' ,3,'EU',600.00,1004),
+  (1007, 'Tomas', 'Ebron' ,5,'THB',300.00,1001),
+  (1008, 'Adams', 'Baker' ,5,'THB',490.00,1001);
