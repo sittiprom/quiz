@@ -2,6 +2,7 @@ package com.anixe.quiz.controller;
 
 import com.anixe.quiz.domain.Booking;
 import com.anixe.quiz.request.BookingRequest;
+import com.anixe.quiz.request.BookingUpdatePrice;
 import com.anixe.quiz.service.BookingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +83,30 @@ public class BookingController {
         Booking booking = createBookingObject(bookingRequest);
         booking.setId(id);
         return ResponseEntity.ok(bookingService.save(booking));
+    }
+
+    @PutMapping("/updatePrice/{id}")
+    public ResponseEntity<?> updatePrice(@PathVariable Integer id, @Valid @RequestBody BookingUpdatePrice bookingUpdatePrice,
+                                    BindingResult bindingResult) {
+
+        log.info("update price for booking Id : "  + id + " with the value " + bookingUpdatePrice);
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+
+        }
+
+        Optional<Booking> resultBooking = bookingService.findByBookingId(id);
+
+        if (!resultBooking.isPresent()) {
+            log.error("Booking Id " + id + " is not existed");
+            return  ResponseEntity.badRequest().body("Booking Id " + id + " is not existed");
+        }
+
+        Booking updateBooking = resultBooking.get();
+        updateBooking.setCurrency(bookingUpdatePrice.getCurrency());
+        updateBooking.setPriceAmount(bookingUpdatePrice.getPriceAmount());
+        return ResponseEntity.ok(bookingService.save(updateBooking));
     }
 
     @DeleteMapping("/delete/{id}")
