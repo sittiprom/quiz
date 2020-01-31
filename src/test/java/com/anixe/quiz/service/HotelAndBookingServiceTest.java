@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RunWith(SpringRunner.class)
@@ -32,7 +33,7 @@ public class HotelAndBookingServiceTest {
 
         hotelService.deleteAllHotel();
 
-        for(int i = 0 ; i < 20 ;i++){
+        for(int i = 0 ; i <= 20 ;i++){
             Hotel hotel = new Hotel();
             hotel.setId(i);
             hotel.setName("Hotel" + i);
@@ -44,10 +45,44 @@ public class HotelAndBookingServiceTest {
     }
 
     @Test
-    public void createBookingWithNotExistHotel(){
+    public void createBooking(){
         List<Hotel> hotels = hotelService.findAllHotel();
-
         Assert.assertEquals("Expect 20 hotel" ,20,hotels.size());
+
+        //create booking in existing hotel
+        Optional<Hotel> hotelOne = hotelService.findById(1);
+
+        Booking bookingWithExistingHotel = new Booking();
+        bookingWithExistingHotel.setCustomerName("Bo");
+        bookingWithExistingHotel.setCustomerSurname("Test");
+        bookingWithExistingHotel.setNumberOfPax(2);
+        bookingWithExistingHotel.setHotel(hotelOne.get());
+        bookingWithExistingHotel = bookingService.save(bookingWithExistingHotel);
+
+        Assert.assertEquals("Expect 20 hotel .No new Hotel" ,20,hotels.size());
+        Assert.assertEquals("Expect Hotel Name is Hotel1" ,"Hotel1" ,
+                bookingWithExistingHotel.getHotel().getName());
+        Assert.assertEquals("Expect HotelId is 1" , Integer.valueOf(1) ,bookingWithExistingHotel.getHotel().getId());
+
+        //Create booing with notFoundHotelId
+        Hotel hotelNotFound = new Hotel();
+        hotelNotFound.setId(1099);
+        hotelNotFound.setName("Hotel Not Found  Test");
+        hotelNotFound.setAddress("Address");
+
+        Booking bookingWithNotFoundHotel = new Booking();
+        bookingWithNotFoundHotel.setCustomerName("Bo");
+        bookingWithNotFoundHotel.setCustomerSurname("No Hotel");
+        bookingWithNotFoundHotel.setNumberOfPax(2);
+        bookingWithNotFoundHotel.setHotel(hotelNotFound);
+        bookingWithNotFoundHotel = bookingService.save(bookingWithNotFoundHotel);
+        hotels = hotelService.findAllHotel();
+
+        Assert.assertEquals("Expect 21 hotel . New Hotel is created" ,21,hotels.size());
+        Assert.assertEquals("Expect Hotel Name is Hotel1" ,"Hotel Not Found  Test" ,
+                bookingWithNotFoundHotel.getHotel().getName());
+        Assert.assertNotEquals("Expect HotelId is not 1099" , Integer.valueOf(1099) ,bookingWithNotFoundHotel.getHotel().getId());
+
 
         Hotel hotel = new Hotel();
         hotel.setName("Hotel Test");
@@ -59,13 +94,12 @@ public class HotelAndBookingServiceTest {
         booking.setCustomerSurname("Sitti");
         booking.setNumberOfPax(2);
         booking.setHotel(hotel);
-
-        Booking result = bookingService.save(booking);
+        booking = bookingService.save(booking);
 
         hotels = hotelService.findAllHotel();
 
-        Assert.assertEquals("Expect 21 hotel" ,21,hotels.size());
-        Assert.assertEquals("Expect Hotel Name is Hotel Test","Hotel Test" , result.getHotel().getName());
+        Assert.assertEquals("Expect 22 hotel" ,22,hotels.size());
+        Assert.assertEquals("Expect Hotel Name is Hotel Test","Hotel Test" , booking.getHotel().getName());
 
     }
 
