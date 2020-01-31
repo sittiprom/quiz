@@ -49,8 +49,19 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
+    public List<Booking> findAll(){
+        return bookingRepository.findAll();
+    }
+
+
+
+
     public void delete(Booking booking){
         bookingRepository.delete(booking);
+    }
+
+    public void deleteAllBooking(){
+        bookingRepository.deleteAll();
     }
 
 

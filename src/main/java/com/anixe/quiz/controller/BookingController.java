@@ -78,7 +78,7 @@ public class BookingController extends AbstractController{
         }
 
         if (!bookingService.findByBookingId(id).isPresent()) {
-            log.error("Booking Id {} " , id + " is not existed");
+            log.error("Booking Id {} " , id + NOT_EXISTED);
             return returnError(HttpStatus.BAD_REQUEST,BOOKING_ID + id + NOT_EXISTED);
         }
 
