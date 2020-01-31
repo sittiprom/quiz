@@ -18,5 +18,7 @@ public interface HotelRepository extends JpaRepository<Hotel,Integer> {
     Set<HotelResponse> findByCustomerSurname(@Param("surname") String surname);
 
 
+
+
 }
 

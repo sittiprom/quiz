@@ -18,30 +18,33 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("booking")
-public class BookingController {
+public class BookingController extends AbstractController{
 
-    private static final Logger log = LoggerFactory.getLogger(HotelController.class);
+    private static final Logger log = LoggerFactory.getLogger(BookingController.class);
+    private static final String HOTEL_ID = "Hotel Id " ;
+    private static final String NOT_EXISTED = " is not existed" ;
+    private static final String BOOKING_ID = " Booking Id" ;
 
     @Autowired
     private BookingService bookingService;
 
     @GetMapping("/findByHotelId/{id}")
-    public ResponseEntity<?> getBookingByHotelId(@PathVariable Integer id) {
+    public ResponseEntity<Object> getBookingByHotelId(@PathVariable Integer id) {
 
-        log.info(" Find Booking By HotelId :  " + id);
+        log.info(" Find Booking By HotelId :  {} " , id);
         List<Booking> bookings = bookingService.findByHotelId(id);
         if(bookings == null || bookings.isEmpty()){
-            return  ResponseEntity.badRequest().body("Hotel Id " + id + " is not existed");
+            return returnError(HttpStatus.BAD_REQUEST,HOTEL_ID + id + NOT_EXISTED);
         }
 
-        return ResponseEntity.ok(bookingService.findByHotelId(id));
+        return returnSuccess(bookingService.findByHotelId(id));
 
     }
 
     @GetMapping("/findById/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable Integer id) {
 
-        log.info(" Find Booking By BookingId :  " + id);
+        log.info(" Find Booking By BookingId : {} " , id);
 
         Optional<Booking> booking = bookingService.findByBookingId(id);
         if (!booking.isPresent()) {
@@ -51,71 +54,70 @@ public class BookingController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody BookingRequest bookingRequest,
+    public ResponseEntity<Booking> create(@Valid @RequestBody BookingRequest bookingRequest,
                                     BindingResult bindingResult) {
-        log.info(" Booking Create Request " + bookingRequest);
+        log.info(" Booking Create Request {}"  , bookingRequest);
 
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
-
-        }
+            return  returnError(HttpStatus.BAD_REQUEST,bindingResult.getAllErrors().toString());
+          }
 
         return ResponseEntity.ok(bookingService.save(createBookingObject(bookingRequest)));
 
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody BookingRequest bookingRequest,
+    public ResponseEntity<Booking> update(@PathVariable Integer id, @Valid @RequestBody BookingRequest bookingRequest,
                                     BindingResult bindingResult) {
 
-        log.info("booking update request : " + bookingRequest.toString() + "with booking id : " + id);
+        log.info("booking update request : {}"  + "with booking id : {}" ,bookingRequest, id);
 
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return returnError(HttpStatus.BAD_REQUEST,bindingResult.getAllErrors().toString());
 
         }
 
         if (!bookingService.findByBookingId(id).isPresent()) {
-            log.error("Booking Id " + id + " is not existed");
-            return  ResponseEntity.badRequest().body("Booking Id " + id + " is not existed");
+            log.error("Booking Id {} " , id + " is not existed");
+            return returnError(HttpStatus.BAD_REQUEST,BOOKING_ID + id + NOT_EXISTED);
         }
 
         Booking booking = createBookingObject(bookingRequest);
         booking.setId(id);
-        return ResponseEntity.ok(bookingService.save(booking));
+        return returnSuccess(bookingService.save(booking));
     }
 
     @PutMapping("/updatePrice/{id}")
-    public ResponseEntity<?> updatePrice(@PathVariable Integer id, @Valid @RequestBody BookingUpdatePrice bookingUpdatePrice,
+    public ResponseEntity<Booking> updatePrice(@PathVariable Integer id, @Valid @RequestBody BookingUpdatePrice bookingUpdatePrice,
                                     BindingResult bindingResult) {
 
-        log.info("update price for booking Id : "  + id + " with the value " + bookingUpdatePrice);
+        log.info("update price for booking Id : {} "  + " with the value {} " ,id, bookingUpdatePrice);
 
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return returnError(HttpStatus.BAD_REQUEST,bindingResult.getAllErrors().toString());
 
         }
 
         Optional<Booking> resultBooking = bookingService.findByBookingId(id);
 
         if (!resultBooking.isPresent()) {
-            log.error("Booking Id " + id + " is not existed");
-            return  ResponseEntity.badRequest().body("Booking Id " + id + " is not existed");
+            log.error(BOOKING_ID +  "  {} " , id + NOT_EXISTED);
+            return returnError(HttpStatus.BAD_REQUEST,BOOKING_ID + id +  NOT_EXISTED);
         }
 
         Booking updateBooking = resultBooking.get();
         updateBooking.setCurrency(bookingUpdatePrice.getCurrency());
         updateBooking.setPriceAmount(bookingUpdatePrice.getPriceAmount());
-        return ResponseEntity.ok(bookingService.save(updateBooking));
+        return  returnSuccess(bookingService.save(updateBooking));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity delete(@PathVariable Integer id) {
-        log.info(" Delete Booking Id " + id);
+        log.info(" Delete Booking Id {} " , id);
 
         Optional<Booking> deletedHotel = bookingService.findByBookingId(id);
         if (!deletedHotel.isPresent()) {
-            return  ResponseEntity.badRequest().body("Booking Id " + id + " is not existed");
+            return  ResponseEntity.badRequest().body(BOOKING_ID + id + NOT_EXISTED);
         }
 
         bookingService.delete(deletedHotel.get());

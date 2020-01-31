@@ -42,6 +42,11 @@ public class HotelService {
         hotelRepository.delete(hotel);
     }
 
+    public void deleteAllHotel() {
+        hotelRepository.deleteAll();
+    }
+
+
     public Set<HotelResponse> findByCustomerSurname(String surname) {
         return hotelRepository.findByCustomerSurname(surname);
 
@@ -58,25 +63,11 @@ public class HotelService {
                         && !booking.getCurrency().isEmpty()) && booking.getPriceAmount() != null).collect(Collectors.toList());
 
             }
-            Set<String> currencySet = new HashSet<>(bookingPrice.stream().map(booking -> booking.getCurrency())
+            Set<String> currencySet = new HashSet<>(bookingPrice.stream().map(Booking::getCurrency)
                     .collect(Collectors.toSet()));
 
 
-            for (String currency : currencySet) {
-                for (Booking booking : bookingPrice) {
-
-                    if (booking.getCurrency().equals(currency)) {
-                        if (sumPrice.containsKey(currency)) {
-                            sumPrice.put(currency, sumPrice.get(currency).add(booking.getPriceAmount()));
-
-                        } else {
-                            sumPrice.put(currency, booking.getPriceAmount());
-                        }
-
-                    }
-                }
-
-            }
+            getSumPrice(sumPrice, bookingPrice, currencySet);
             bookingTotalAmount.setHotelName(hotel.getName());
             bookingTotalAmount.setHotelId(hotelId);
             bookingTotalAmount.setSumPrice(sumPrice);
@@ -85,5 +76,23 @@ public class HotelService {
         });
 
         return bookingTotalAmount;
+    }
+
+    private void getSumPrice(Map<String, BigDecimal> sumPrice, List<Booking> bookingPrice, Set<String> currencySet) {
+        for (String currency : currencySet) {
+            for (Booking booking : bookingPrice) {
+
+                if (booking.getCurrency().equals(currency)) {
+                    if (sumPrice.containsKey(currency)) {
+                        sumPrice.put(currency, sumPrice.get(currency).add(booking.getPriceAmount()));
+
+                    } else {
+                        sumPrice.put(currency, booking.getPriceAmount());
+                    }
+
+                }
+            }
+
+        }
     }
 }

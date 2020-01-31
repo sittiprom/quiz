@@ -21,9 +21,11 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("hotel")
-public class HotelController {
+public class HotelController extends AbstractController {
 
     private static final Logger log = LoggerFactory.getLogger(HotelController.class);
+    private static final String HOTEL_ID = "Hotel Id " ;
+    private static final String NOT_EXISTED = "is not existed" ;
 
     @Autowired
     private HotelService hotelService;
@@ -37,7 +39,7 @@ public class HotelController {
     @GetMapping("/findById/{id}")
     public ResponseEntity<Hotel> findById(@PathVariable Integer id) {
 
-        log.info("Find hotel By Id  : " + id);
+        log.info("Find hotel By Id  : {} " , id);
 
         Optional<Hotel> hotel = hotelService.findById(id);
 
@@ -49,43 +51,43 @@ public class HotelController {
     }
 
     @GetMapping("/findHotelBySurname/{surname}")
-    public ResponseEntity<?> getHotelByCustomerSurname(@PathVariable String surname) {
+    public ResponseEntity<HotelResponse> getHotelByCustomerSurname(@PathVariable String surname) {
 
-        log.info("Find hotel By Customer surname   : " + surname);
+        log.info("Find hotel By Customer surname   : {} " , surname);
 
         Set<HotelResponse> hotelResponses = hotelService.findByCustomerSurname(surname);
         if (hotelResponses == null || hotelResponses.isEmpty()) {
-            return  ResponseEntity.badRequest().body("Customer surname  " + surname + " is not existed");
+            return returnError(HttpStatus.BAD_REQUEST, "Customer surname  " + surname + NOT_EXISTED);
         }
 
-        return ResponseEntity.ok(hotelResponses);
+        return returnSuccess(hotelResponses);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody HotelRequest hotelRequest , BindingResult bindingResult) {
+    public ResponseEntity<Hotel> create(@Valid @RequestBody HotelRequest hotelRequest , BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return returnError(HttpStatus.BAD_REQUEST,bindingResult.getAllErrors().toString());
         }
 
-        log.info("hotel create request : " + hotelRequest.toString());
+        log.info("hotel create request : {} " , hotelRequest);
         return ResponseEntity.ok(hotelService.save(createHotelObject(hotelRequest)));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody HotelRequest hotelRequest ,
+    public ResponseEntity<Hotel> update(@PathVariable Integer id, @Valid @RequestBody HotelRequest hotelRequest ,
                                         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return  returnError(HttpStatus.BAD_REQUEST,bindingResult.getAllErrors().toString());
         }
 
         if (!hotelService.findById(id).isPresent()) {
-            log.error("Id " + id + " is not existed");
-            return  ResponseEntity.badRequest().body("Hotel Id " + id + " is not existed");
+            log.error( HOTEL_ID + " {}" , id + NOT_EXISTED);
+            return  returnError(HttpStatus.BAD_REQUEST,HOTEL_ID + id + NOT_EXISTED);
         }
 
-        log.info("hotel update request : " + hotelRequest.toString() + "with hotel id : " + id);
+        log.info("hotel update request : {} "  + " with hotel id {} : " ,hotelRequest, id);
 
         Hotel hotel = createHotelObject(hotelRequest);
         hotel.setId(id);
@@ -95,7 +97,7 @@ public class HotelController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity delete(@PathVariable Integer id) {
 
-        log.info("delete hotel id  : " + id);
+        log.info("delete hotel id {} : " , id);
         Optional<Hotel> deletedHotel = hotelService.findById(id);
         if (!deletedHotel.isPresent()) {
             return ResponseEntity.badRequest().build();
@@ -107,17 +109,17 @@ public class HotelController {
     }
 
     @GetMapping("/findTotalAmountBooking/{id}")
-    public ResponseEntity<?> findTotalAmountByHotelId(@PathVariable Integer id) {
+    public ResponseEntity<BookingTotalAmount> findTotalAmountByHotelId(@PathVariable Integer id) {
 
         if (!hotelService.findById(id).isPresent()) {
-            log.error("Hotel Id " + id + " is not existed");
-           return  ResponseEntity.badRequest().body("Hotel Id " + id + " is not existed");
+            log.error(HOTEL_ID +  " {} " , id + NOT_EXISTED);
+            return returnError(HttpStatus.BAD_REQUEST,HOTEL_ID + id + NOT_EXISTED);
 
         }
 
-        log.info("Find TotalAmount Booking By hotelId : " + id);
+        log.info("Find TotalAmount Booking By hotelId : {} " , id);
 
-        return ResponseEntity.ok(hotelService.findSumPriceByHotel(id));
+        return returnSuccess(hotelService.findSumPriceByHotel(id));
     }
 
     private Hotel createHotelObject(HotelRequest hotelRequest) {
